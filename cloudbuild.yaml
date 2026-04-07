@@ -2,14 +2,15 @@ steps:
   # 1. ตรวจสอบโค้ด (SAST) ด้วย SonarQube
   - name: "sonarsource/sonar-scanner-cli"
     args:
+      - "-X"
       - "-Dsonar.projectKey=gc-poc-project"
-      - "-Dsonar.organization=thitikarnt" # <--- ใส่ค่าตามที่เห็นในรูปหน้าจอ
+      - "-Dsonar.organization=thitikarnt"
       - "-Dsonar.sources=."
       - "-Dsonar.host.url=https://sonarcloud.io"
       - "-Dsonar.login=$_SONAR_TOKEN"
 
   # 2. ตรวจสอบ Library (SCA) ด้วย Trivy
-  - name: "aquasec/trivy"
+  - name: "aquasec/trivy:0.50.0"
     entrypoint: "sh"
     args:
       - "-c"
@@ -36,8 +37,15 @@ steps:
         "1",
         "asia-southeast1-docker.pkg.dev/$PROJECT_ID/my-repo/streamlit-app",
       ]
+  # 5. push image ไป Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "asia-southeast1-docker.pkg.dev/$PROJECT_ID/my-repo/streamlit-app:$COMMIT_SHA",
+      ]
 
-  # 5. ส่งขึ้น Cloud Run
+  # 6. ส่งขึ้น Cloud Run
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
     args:
