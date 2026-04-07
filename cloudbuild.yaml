@@ -39,11 +39,11 @@ steps:
       ]
 
   # 5. push image ไป Artifact Registry
+  # 5. push image ไป Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
-    args:
-      [
+    args: [
         "push",
-        "asia-southeast1-docker.pkg.dev/$PROJECT_ID/my-repo/streamlit-app:$COMMIT_SHA",
+        "asia-southeast1-docker.pkg.dev/$PROJECT_ID/my-repo/streamlit-app", # ลบ :$COMMIT_SHA ออก
       ]
 
   # 6. ส่งขึ้น Cloud Run
