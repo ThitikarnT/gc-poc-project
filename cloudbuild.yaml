@@ -26,8 +26,9 @@ steps:
         ".",
       ]
 
-  # 4. ตรวจสอบกล่องแอป (Container Scan) ด้วย Trivy
-  - name: "aquasec/trivy"
+  # 4. ตรวจสอบกล่องแอป (Container Scan) ด้วย Trivy# 4. ตรวจสอบกล่องแอป (Container Scan) ด้วย Trivy
+  - name: "aquasec/trivy:0.50.0"
+    entrypoint: "trivy"
     args:
       [
         "image",
@@ -37,6 +38,7 @@ steps:
         "1",
         "asia-southeast1-docker.pkg.dev/$PROJECT_ID/my-repo/streamlit-app",
       ]
+
   # 5. push image ไป Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
     args:
