@@ -1,0 +1,53 @@
+steps:
+  # 1. ตรวจสอบโค้ด (SAST) ด้วย SonarQube
+  - name: "sonarsource/sonar-scanner-cli"
+    args:
+      - "-Dsonar.projectKey=gc-poc-project"
+      - "-Dsonar.sources=."
+      - "-Dsonar.host.url=https://sonarcloud.io"
+      - "-Dsonar.login=$_SONAR_TOKEN"
+
+  # 2. ตรวจสอบ Library (SCA) ด้วย Trivy
+  - name: "aquasec/trivy"
+    entrypoint: "sh"
+    args:
+      - "-c"
+      - "trivy fs . --severity HIGH,CRITICAL --exit-code 1"
+
+  # 3. สร้างกล่องแอป (Docker Build)
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "asia-southeast1-docker.pkg.dev/$PROJECT_ID/my-repo/streamlit-app",
+        ".",
+      ]
+
+  # 4. ตรวจสอบกล่องแอป (Container Scan) ด้วย Trivy
+  - name: "aquasec/trivy"
+    args:
+      [
+        "image",
+        "--severity",
+        "HIGH,CRITICAL",
+        "--exit-code",
+        "1",
+        "asia-southeast1-docker.pkg.dev/$PROJECT_ID/my-repo/streamlit-app",
+      ]
+
+  # 5. ส่งขึ้น Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "gc-web-app"
+      - "--image=asia-southeast1-docker.pkg.dev/$PROJECT_ID/my-repo/streamlit-app"
+      - "--region=asia-southeast1"
+      - "--platform=managed"
+      - "--allow-unauthenticated"
+
+# ตัวแปรเสริม (Substitutions)
+substitutions:
+  _SONAR_TOKEN: "dd823415db4c01d2514b3a055c3c39b1e8cc3dac"
