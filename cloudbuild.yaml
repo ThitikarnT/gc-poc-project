@@ -10,7 +10,7 @@ steps:
       - "-Dsonar.login=$_SONAR_TOKEN"
 
   # 2. ตรวจสอบ Library (SCA) ด้วย Trivy
-  - name: "aquasec/trivy:0.50.0"
+  - name: "aquasec/trivy:0.49.1" # <--- เติม :0.49.1 เข้าไป
     entrypoint: "sh"
     args:
       - "-c"
@@ -27,8 +27,7 @@ steps:
       ]
 
   # 4. ตรวจสอบกล่องแอป (Container Scan) ด้วย Trivy# 4. ตรวจสอบกล่องแอป (Container Scan) ด้วย Trivy
-  - name: "aquasec/trivy:0.50.0"
-    entrypoint: "trivy"
+  - name: "aquasec/trivy:0.49.1" # <--- จุดนี้ก็ต้องเติม :0.49.1 ด้วยครับ
     args:
       [
         "image",
