@@ -3,6 +3,7 @@ steps:
   - name: "sonarsource/sonar-scanner-cli"
     args:
       - "-Dsonar.projectKey=gc-poc-project"
+      - "-Dsonar.organization=thitikant" # <--- ใส่ค่าตามที่เห็นในรูปหน้าจอ
       - "-Dsonar.sources=."
       - "-Dsonar.host.url=https://sonarcloud.io"
       - "-Dsonar.login=$_SONAR_TOKEN"
