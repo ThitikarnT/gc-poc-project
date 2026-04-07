@@ -58,6 +58,15 @@ steps:
       - "--platform=managed"
       - "--allow-unauthenticated"
 
+  # 7. สแกนหาช่องโหว่หน้าเว็บ (DAST) ด้วย OWASP ZAP (ฟรี)
+  # เราต้องรันหลังจาก Deploy ขึ้น Cloud Run เสร็จแล้วเพื่อให้มี URL ให้สแกน
+  - name: "owasp/zap2docker-stable"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        zap-baseline.py -t https://gc-web-app-xxx.a.run.app -r zap_report.html || true
+
 # ตัวแปรเสริม (Substitutions)
 substitutions:
   _SONAR_TOKEN: "dd823415db4c01d2514b3a055c3c39b1e8cc3dac"
