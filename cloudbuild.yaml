@@ -51,3 +51,9 @@ steps:
 # ตัวแปรเสริม (Substitutions)
 substitutions:
   _SONAR_TOKEN: "dd823415db4c01d2514b3a055c3c39b1e8cc3dac"
+
+# ... (โค้ดส่วนเดิมของคุณ) ...
+
+# เพิ่มส่วนนี้ลงไปท้ายไฟล์ครับ
+options:
+  logging: CLOUD_LOGGING_ONLY
